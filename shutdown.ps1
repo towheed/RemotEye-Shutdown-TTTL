@@ -78,25 +78,26 @@ $server = Connect-VIServer -Credential $vc_credential
 
 # Get list of ESXi hosts
 # TODO Do we need to get only 'connected' hosts?
-$hosts=Get-VMHost -Server $server
+$hosts = Get-VMHost -Server $server
 
 # Get list of all virtual machines
-$vms = Get-VM -Server $server
+# $vms = Get-VM -Server $server
 
 # Because vCentre Server is a VM, we remove it from the list
 # TODO Remove $vc_server from list of VM's
 
-
-
-
 # Iterate through list of ESXi hosts and get list of VM's
 foreach ($host in $hosts) {
-    $vms=<cmdlet>
-    # TODO PowerCLI cmdlet to retrieve lists of VM on $host
-    foreach ($vm in $vms) {
-        # Poweroff $vm asynchronously
-        # TODO PowerCLI cmdlet to poweroff $vm
-    }
+    $vms = Get-VM -Location $host
+#    foreach ($vm in $vms) {
+        # Poweroff vm's asynchronously
+        # TODO Do we need to shutdown the guest OS first?
+        array_element_n = start-job -scriptblock {
+                                     $stop_vm_task = Stop-VM -VM $vms -Server $server -Confirm:$false -RunAsync
+                                     wait-task -Task $stop_vm_task
+                                     }
+        <next_array_element_n+1>
+#    }
     # Check all VM's on $host are powered off
     # TODO PowerCLI cmdlet to check all VM's are powered off on $host
     
