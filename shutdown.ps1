@@ -1,5 +1,5 @@
 # PowerShell and PowerCLI shutdown script for Toyota Trinidad and Tobago Ltd - Barataria
-# Get the latest version from: <TODO Add GitHub file URL here>
+# Get the latest version from: https://github.com/towheed/RemotEye-Shutdown-TTTL/blob/master/shutdown.ps1
 
 # Set tab=4
 
