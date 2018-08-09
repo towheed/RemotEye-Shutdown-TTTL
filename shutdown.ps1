@@ -56,10 +56,38 @@
 # Have a look at:
 # https://www.virtuallyghetto.com/2016/07/how-to-easily-disable-vmotion-cross-vcenter-vmotion-for-a-particular-virtual-machine.html
 # https://github.com/lamw/vghetto-scripts/blob/master/powershell/enable-disable-vsphere-api-method.ps1
+# 
+# CredentialStore:
+# We choose to use the credential store to authenticate on the vCentre Server.
+# This method has the advantage of not having to specify the passwords in
+# plain text during authentication. To ensure this works properly, we must
+# issue a 'New-VICredentialStoreItem' cmdlet manually to create the store if
+# one does not already exist. Please take careful note of this, or else this
+# script fails.
+
+# Declare our vars centrally
+$vc_server = "<ipv4 addr of the vcentre server>"
+$vc_username = "<vcentre servr username>"
+$vc_credentialstore_file = "<fully qualified filename to the credential store>"
+
+# Get the credential store
+$vc_credential = Get-VICredentialStoreItem -Host $vc_server -User $vc_username -File $vc_credentialstore_file
+
+# Connect to the vCentre Server
+$server = Connect-VIServer -Credential $vc_credential
 
 # Get list of ESXi hosts
-$hosts=<cmdlet>
-# TODO cmdlet to retrieve list of all ESXi host
+# TODO Do we need to get only 'connected' hosts?
+$hosts=Get-VMHost -Server $server
+
+# Get list of all virtual machines
+$vms = Get-VM -Server $server
+
+# Because vCentre Server is a VM, we remove it from the list
+# TODO Remove $vc_server from list of VM's
+
+
+
 
 # Iterate through list of ESXi hosts and get list of VM's
 foreach ($host in $hosts) {
